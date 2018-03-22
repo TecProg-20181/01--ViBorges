@@ -7,10 +7,10 @@ typedef struct _pixel {
 } Pixel;
 
 typedef struct _image {
-    // [width][height][rgb]
     // 0 -> r
     // 1 -> g
     // 2 -> b
+    // pixel[width][height][rgb]
     unsigned short int pixel[512][512][3];
     unsigned int w;
     unsigned int h;
@@ -31,14 +31,8 @@ int pixel_igual(Pixel p1, Pixel p2) {
     return 0;
 }
 
-
+// grey scale filter
 Image escala_de_cinza(Image img) {
-    /*for (unsigned int i = 0; i < img.h; ++i) {
-        for (unsigned int j = 0; j < img.w; ++j) {
-            print("%u", img.pixel[i][j][0] + img.pixel[i][j][1] + img.pixel[i][j][2]);
-        }
-    }*/
-
     for (unsigned int i = 0; i < img.h; ++i) {
         for (unsigned int j = 0; j < img.w; ++j) {
             int media = img.pixel[i][j][0] +
@@ -54,6 +48,7 @@ Image escala_de_cinza(Image img) {
     return img;
 }
 
+// sepia filter
 Image sepia(Image img){
     for (unsigned int x = 0; x < img.h; ++x) {
         for (unsigned int j = 0; j < img.w; ++j) {
@@ -79,6 +74,7 @@ Image sepia(Image img){
     return img;
 }
 
+// mirroring filter
 Image espelhamento(Image img){
     int horizontal = 0;
     scanf("%d", &horizontal);
@@ -113,6 +109,7 @@ Image espelhamento(Image img){
   return img;
 }
 
+// blur filter
 Image blur(Image img, int T) {
     for (unsigned int i = 0; i < img.h; ++i) {
         for (unsigned int j = 0; j < img.w; ++j) {
@@ -141,6 +138,7 @@ Image blur(Image img, int T) {
     return img;
 }
 
+// rotate 90 degrees right
 Image rotacionar90direita(Image img) {
     Image rotacionada;
 
@@ -158,6 +156,7 @@ Image rotacionar90direita(Image img) {
     return rotacionada;
 }
 
+// negative filter
 Image inverter_cores(Image img) {
     for (unsigned int i = 0; i < img.h; ++i) {
         for (unsigned int j = 0; j < img.w; ++j) {
@@ -169,6 +168,7 @@ Image inverter_cores(Image img) {
     return img;
 }
 
+// crop image
 Image cortar_imagem(Image img, int x, int y, int w, int h) {
     Image cortada;
 
@@ -216,21 +216,21 @@ int main() {
         scanf("%d", &opcao);
 
         switch(opcao) {
-            case 1: { // Escala de Cinza
+            case 1: { // grey scale filter
                 img = escala_de_cinza(img);
                 break;
             }
-            case 2: { // Filtro Sepia
+            case 2: { // sepia filter
                 img = sepia(img);
                 break;
             }
-            case 3: { // Blur
+            case 3: { // blur filter
                 int tamanho = 0;
                 scanf("%d", &tamanho);
                 img = blur(img, tamanho);
                 break;
             }
-            case 4: { // Rotacao
+            case 4: { // rotation filter
                 int quantas_vezes = 0;
                 scanf("%d", &quantas_vezes);
                 quantas_vezes %= 4;
@@ -239,15 +239,15 @@ int main() {
                 }
                 break;
             }
-            case 5: { // Espelhamento
-                  img = espelhamento(img);
+            case 5: { // mirroring filter
+                img = espelhamento(img);
                 break;
             }
-            case 6: { // Inversao de Cores
+            case 6: { // negative filter
                 img = inverter_cores(img);
                 break;
             }
-            case 7: { // Cortar Imagem
+            case 7: { // crop image
                 int x, y;
                 scanf("%d %d", &x, &y);
                 int w, h;
@@ -262,6 +262,7 @@ int main() {
 
     // print type of image
     printf("P3\n");
+
     // print width height and color of image
     printf("%u %u\n255\n", img.w, img.h);
 

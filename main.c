@@ -32,16 +32,16 @@ int pixel_igual(Pixel p1, Pixel p2) {
 }
 
 // grey scale filter
-Image escala_de_cinza(Image img) {
+Image grey_scale(Image img) {
     for (unsigned int i = 0; i < img.h; ++i) {
         for (unsigned int j = 0; j < img.w; ++j) {
-            int media = img.pixel[i][j][0] +
-                        img.pixel[i][j][1] +
-                        img.pixel[i][j][2];
-            media /= 3;
-            img.pixel[i][j][0] = media;
-            img.pixel[i][j][1] = media;
-            img.pixel[i][j][2] = media;
+            int average = img.pixel[i][j][0] +
+                          img.pixel[i][j][1] +
+                          img.pixel[i][j][2];
+            average /= 3;
+            img.pixel[i][j][0] = average;
+            img.pixel[i][j][1] = average;
+            img.pixel[i][j][2] = average;
         }
     }
 
@@ -58,16 +58,16 @@ Image sepia(Image img){
             pixel[2] = img.pixel[x][j][2];
 
             int p =  pixel[0] * .393 + pixel[1] * .769 + pixel[2] * .189;
-            int menor_r = (255 >  p) ? p : 255;
-            img.pixel[x][j][0] = menor_r;
+            int min_r = (255 >  p) ? p : 255;
+            img.pixel[x][j][0] = min_r;
 
             p =  pixel[0] * .349 + pixel[1] * .686 + pixel[2] * .168;
-            menor_r = (255 >  p) ? p : 255;
-            img.pixel[x][j][1] = menor_r;
+            min_r = (255 >  p) ? p : 255;
+            img.pixel[x][j][1] = min_r;
 
             p =  pixel[0] * .272 + pixel[1] * .534 + pixel[2] * .131;
-            menor_r = (255 >  p) ? p : 255;
-            img.pixel[x][j][2] = menor_r;
+            min_r = (255 >  p) ? p : 255;
+            img.pixel[x][j][2] = min_r;
         }
     }
 
@@ -75,7 +75,7 @@ Image sepia(Image img){
 }
 
 // mirroring filter
-Image espelhamento(Image img){
+Image mirroring(Image img){
     int horizontal = 0;
     scanf("%d", &horizontal);
 
@@ -113,25 +113,26 @@ Image espelhamento(Image img){
 Image blur(Image img, int T) {
     for (unsigned int i = 0; i < img.h; ++i) {
         for (unsigned int j = 0; j < img.w; ++j) {
-            Pixel media = {0, 0, 0};
+            Pixel average = {0, 0, 0};
 
-            int menor_h = (img.h - 1 > i + T/2) ? i + T/2 : img.h - 1;
+            int min_h = (img.h - 1 > i + T/2) ? i + T/2 : img.h - 1;
             int min_w = (img.w - 1 > j + T/2) ? j + T/2 : img.w - 1;
-            for(int x = (0 > i - T/2 ? 0 : i - T/2); x <= menor_h; ++x) {
+
+            for(int x = (0 > i - T/2 ? 0 : i - T/2); x <= min_h; ++x) {
                 for(int y = (0 > j - T/2 ? 0 : j - T/2); y <= min_w; ++y) {
-                    media.r += img.pixel[x][y][0];
-                    media.g += img.pixel[x][y][1];
-                    media.b += img.pixel[x][y][2];
+                    average.r += img.pixel[x][y][0];
+                    average.g += img.pixel[x][y][1];
+                    average.b += img.pixel[x][y][2];
                 }
             }
 
-            media.r /= T * T;
-            media.g /= T * T;
-            media.b /= T * T;
+            average.r /= T * T;
+            average.g /= T * T;
+            average.b /= T * T;
 
-            img.pixel[i][j][0] = media.r;
-            img.pixel[i][j][1] = media.g;
-            img.pixel[i][j][2] = media.b;
+            img.pixel[i][j][0] = average.r;
+            img.pixel[i][j][1] = average.g;
+            img.pixel[i][j][2] = average.b;
         }
     }
 
@@ -139,25 +140,25 @@ Image blur(Image img, int T) {
 }
 
 // rotate 90 degrees right
-Image rotacionar90direita(Image img) {
-    Image rotacionada;
+Image rotation(Image img) {
+    Image rotated;
 
-    rotacionada.w = img.h;
-    rotacionada.h = img.w;
+    rotated.w = img.h;
+    rotated.h = img.w;
 
-    for (unsigned int i = 0, y = 0; i < rotacionada.h; ++i, ++y) {
-        for (int j = rotacionada.w - 1, x = 0; j >= 0; --j, ++x) {
-            rotacionada.pixel[i][j][0] = img.pixel[x][y][0];
-            rotacionada.pixel[i][j][1] = img.pixel[x][y][1];
-            rotacionada.pixel[i][j][2] = img.pixel[x][y][2];
+    for (unsigned int i = 0, y = 0; i < rotated.h; ++i, ++y) {
+        for (int j = rotated.w - 1, x = 0; j >= 0; --j, ++x) {
+            rotated.pixel[i][j][0] = img.pixel[x][y][0];
+            rotated.pixel[i][j][1] = img.pixel[x][y][1];
+            rotated.pixel[i][j][2] = img.pixel[x][y][2];
         }
     }
 
-    return rotacionada;
+    return rotated;
 }
 
 // negative filter
-Image inverter_cores(Image img) {
+Image negative(Image img) {
     for (unsigned int i = 0; i < img.h; ++i) {
         for (unsigned int j = 0; j < img.w; ++j) {
             img.pixel[i][j][0] = 255 - img.pixel[i][j][0];
@@ -169,21 +170,21 @@ Image inverter_cores(Image img) {
 }
 
 // crop image
-Image cortar_imagem(Image img, int x, int y, int w, int h) {
-    Image cortada;
+Image crop_image(Image img, int x, int y, int w, int h) {
+    Image croped;
 
-    cortada.w = w;
-    cortada.h = h;
+    croped.w = w;
+    croped.h = h;
 
     for(int i = 0; i < h; ++i) {
         for(int j = 0; j < w; ++j) {
-            cortada.pixel[i][j][0] = img.pixel[i + y][j + x][0];
-            cortada.pixel[i][j][1] = img.pixel[i + y][j + x][1];
-            cortada.pixel[i][j][2] = img.pixel[i + y][j + x][2];
+            croped.pixel[i][j][0] = img.pixel[i + y][j + x][0];
+            croped.pixel[i][j][1] = img.pixel[i + y][j + x][1];
+            croped.pixel[i][j][2] = img.pixel[i + y][j + x][2];
         }
     }
 
-    return cortada;
+    return croped;
 }
 
 
@@ -208,16 +209,16 @@ int main() {
         }
     }
 
-    int n_opcoes;
-    scanf("%d", &n_opcoes);
+    int n_options;
+    scanf("%d", &n_options);
 
-    for(int i = 0; i < n_opcoes; ++i) {
-        int opcao;
-        scanf("%d", &opcao);
+    for(int i = 0; i < n_options; ++i) {
+        int options;
+        scanf("%d", &options);
 
-        switch(opcao) {
+        switch(options) {
             case 1: { // grey scale filter
-                img = escala_de_cinza(img);
+                img = grey_scale(img);
                 break;
             }
             case 2: { // sepia filter
@@ -225,26 +226,26 @@ int main() {
                 break;
             }
             case 3: { // blur filter
-                int tamanho = 0;
-                scanf("%d", &tamanho);
-                img = blur(img, tamanho);
+                int size = 0;
+                scanf("%d", &size);
+                img = blur(img, size);
                 break;
             }
             case 4: { // rotation filter
-                int quantas_vezes = 0;
-                scanf("%d", &quantas_vezes);
-                quantas_vezes %= 4;
-                for (int j = 0; j < quantas_vezes; ++j) {
-                    img = rotacionar90direita(img);
+                int count = 0;
+                scanf("%d", &count);
+                count %= 4;
+                for (int j = 0; j < count; ++j) {
+                    img = rotation(img);
                 }
                 break;
             }
             case 5: { // mirroring filter
-                img = espelhamento(img);
+                img = mirroring(img);
                 break;
             }
             case 6: { // negative filter
-                img = inverter_cores(img);
+                img = negative(img);
                 break;
             }
             case 7: { // crop image
@@ -253,7 +254,7 @@ int main() {
                 int w, h;
                 scanf("%d %d", &w, &h);
 
-                img = cortar_imagem(img, x, y, w, h);
+                img = crop_image(img, x, y, w, h);
                 break;
             }
         }

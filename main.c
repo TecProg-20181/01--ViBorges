@@ -127,7 +127,7 @@ Image blur(Image img, int T) {
                     media.b += img.pixel[x][y][2];
                 }
             }
-            
+
             media.r /= T * T;
             media.g /= T * T;
             media.b /= T * T;
@@ -158,15 +158,15 @@ Image rotacionar90direita(Image img) {
     return rotacionada;
 }
 
-void inverter_cores(unsigned short int pixel[512][512][3],
-                    unsigned int w, unsigned int h) {
-    for (unsigned int i = 0; i < h; ++i) {
-        for (unsigned int j = 0; j < w; ++j) {
-            pixel[i][j][0] = 255 - pixel[i][j][0];
-            pixel[i][j][1] = 255 - pixel[i][j][1];
-            pixel[i][j][2] = 255 - pixel[i][j][2];
+Image inverter_cores(Image img) {
+    for (unsigned int i = 0; i < img.h; ++i) {
+        for (unsigned int j = 0; j < img.w; ++j) {
+            img.pixel[i][j][0] = 255 - img.pixel[i][j][0];
+            img.pixel[i][j][1] = 255 - img.pixel[i][j][1];
+            img.pixel[i][j][2] = 255 - img.pixel[i][j][2];
         }
     }
+    return img;
 }
 
 Image cortar_imagem(Image img, int x, int y, int w, int h) {
@@ -244,7 +244,7 @@ int main() {
                 break;
             }
             case 6: { // Inversao de Cores
-                inverter_cores(img.pixel, img.w, img.h);
+                img = inverter_cores(img);
                 break;
             }
             case 7: { // Cortar Imagem

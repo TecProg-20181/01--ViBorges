@@ -15,9 +15,9 @@ int main() {
     // read all pixels of image
     for (unsigned int i = 0; i < img.h; ++i) {
         for (unsigned int j = 0; j < img.w; ++j) {
-            scanf("%hu %hu %hu", &img.pixel[i][j][0],
-                                 &img.pixel[i][j][1],
-                                 &img.pixel[i][j][2]);
+            scanf("%hu %hu %hu", &img.pixel[i][j].r,
+                                 &img.pixel[i][j].g,
+                                 &img.pixel[i][j].b);
 
         }
     }
@@ -84,9 +84,9 @@ int main() {
     // print pixels of image
     for (unsigned int i = 0; i < img.h; ++i) {
         for (unsigned int j = 0; j < img.w; ++j) {
-            printf("%hu %hu %hu ", img.pixel[i][j][0],
-                                   img.pixel[i][j][1],
-                                   img.pixel[i][j][2]);
+            printf("%hu %hu %hu ", img.pixel[i][j].r,
+                                   img.pixel[i][j].g,
+                                   img.pixel[i][j].b);
 
         }
         printf("\n");

@@ -5,13 +5,13 @@
 Image grey_scale(Image img) {
     for (unsigned int i = 0; i < img.h; ++i) {
         for (unsigned int j = 0; j < img.w; ++j) {
-            int average = img.pixel[i][j][0] +
-                          img.pixel[i][j][1] +
-                          img.pixel[i][j][2];
+            int average = img.pixel[i][j].r +
+                          img.pixel[i][j].g +
+                          img.pixel[i][j].b;
             average /= 3;
-            img.pixel[i][j][0] = average;
-            img.pixel[i][j][1] = average;
-            img.pixel[i][j][2] = average;
+            img.pixel[i][j].r = average;
+            img.pixel[i][j].g = average;
+            img.pixel[i][j].b = average;
         }
     }
 
@@ -20,24 +20,24 @@ Image grey_scale(Image img) {
 
 // sepia filter
 Image sepia(Image img){
-    for (unsigned int x = 0; x < img.h; ++x) {
+    for (unsigned int i = 0; i < img.h; ++i) {
         for (unsigned int j = 0; j < img.w; ++j) {
-            unsigned short int pixel[3];
-            pixel[0] = img.pixel[x][j][0];
-            pixel[1] = img.pixel[x][j][1];
-            pixel[2] = img.pixel[x][j][2];
+            Pixel pixel;
+            pixel.r = img.pixel[i][j].r;
+            pixel.g = img.pixel[i][j].g;
+            pixel.b = img.pixel[i][j].b;
 
-            int p =  pixel[0] * .393 + pixel[1] * .769 + pixel[2] * .189;
+            int p =  pixel.r * .393 + pixel.g * .769 + pixel.b * .189;
             int min_r = (255 >  p) ? p : 255;
-            img.pixel[x][j][0] = min_r;
+            img.pixel[i][j].r = min_r;
 
-            p =  pixel[0] * .349 + pixel[1] * .686 + pixel[2] * .168;
+            p =  pixel.r * .349 + pixel.g * .686 + pixel.b * .168;
             min_r = (255 >  p) ? p : 255;
-            img.pixel[x][j][1] = min_r;
+            img.pixel[i][j].g = min_r;
 
-            p =  pixel[0] * .272 + pixel[1] * .534 + pixel[2] * .131;
+            p =  pixel.r * .272 + pixel.g * .534 + pixel.b * .131;
             min_r = (255 >  p) ? p : 255;
-            img.pixel[x][j][2] = min_r;
+            img.pixel[i][j].b = min_r;
         }
     }
 
@@ -62,17 +62,17 @@ Image mirroring(Image img){
             else x = img.h - 1 - i2;
 
             Pixel aux1;
-            aux1.r = img.pixel[i2][j][0];
-            aux1.g = img.pixel[i2][j][1];
-            aux1.b = img.pixel[i2][j][2];
+            aux1.r = img.pixel[i2][j].r;
+            aux1.g = img.pixel[i2][j].g;
+            aux1.b = img.pixel[i2][j].b;
 
-            img.pixel[i2][j][0] = img.pixel[x][y][0];
-            img.pixel[i2][j][1] = img.pixel[x][y][1];
-            img.pixel[i2][j][2] = img.pixel[x][y][2];
+            img.pixel[i2][j].r = img.pixel[x][y].r;
+            img.pixel[i2][j].g = img.pixel[x][y].g;
+            img.pixel[i2][j].b = img.pixel[x][y].b;
 
-            img.pixel[x][y][0] = aux1.r;
-            img.pixel[x][y][1] = aux1.g;
-            img.pixel[x][y][2] = aux1.b;
+            img.pixel[x][y].r = aux1.r;
+            img.pixel[x][y].g = aux1.g;
+            img.pixel[x][y].b = aux1.b;
         }
     }
 
@@ -90,9 +90,9 @@ Image blur(Image img, int T) {
 
             for(int x = (0 > i - T/2 ? 0 : i - T/2); x <= min_h; ++x) {
                 for(int y = (0 > j - T/2 ? 0 : j - T/2); y <= min_w; ++y) {
-                    average.r += img.pixel[x][y][0];
-                    average.g += img.pixel[x][y][1];
-                    average.b += img.pixel[x][y][2];
+                    average.r += img.pixel[x][y].r;
+                    average.g += img.pixel[x][y].g;
+                    average.b += img.pixel[x][y].b;
                 }
             }
 
@@ -100,9 +100,9 @@ Image blur(Image img, int T) {
             average.g /= T * T;
             average.b /= T * T;
 
-            img.pixel[i][j][0] = average.r;
-            img.pixel[i][j][1] = average.g;
-            img.pixel[i][j][2] = average.b;
+            img.pixel[i][j].r = average.r;
+            img.pixel[i][j].g = average.g;
+            img.pixel[i][j].b = average.b;
         }
     }
 
@@ -118,9 +118,9 @@ Image rotation(Image img) {
 
     for (unsigned int i = 0, y = 0; i < rotated.h; ++i, ++y) {
         for (int j = rotated.w - 1, x = 0; j >= 0; --j, ++x) {
-            rotated.pixel[i][j][0] = img.pixel[x][y][0];
-            rotated.pixel[i][j][1] = img.pixel[x][y][1];
-            rotated.pixel[i][j][2] = img.pixel[x][y][2];
+            rotated.pixel[i][j].r = img.pixel[x][y].r;
+            rotated.pixel[i][j].g = img.pixel[x][y].g;
+            rotated.pixel[i][j].b = img.pixel[x][y].b;
         }
     }
 
@@ -131,9 +131,9 @@ Image rotation(Image img) {
 Image negative(Image img) {
     for (unsigned int i = 0; i < img.h; ++i) {
         for (unsigned int j = 0; j < img.w; ++j) {
-            img.pixel[i][j][0] = 255 - img.pixel[i][j][0];
-            img.pixel[i][j][1] = 255 - img.pixel[i][j][1];
-            img.pixel[i][j][2] = 255 - img.pixel[i][j][2];
+            img.pixel[i][j].r = 255 - img.pixel[i][j].r;
+            img.pixel[i][j].g = 255 - img.pixel[i][j].g;
+            img.pixel[i][j].b = 255 - img.pixel[i][j].b;
         }
     }
     return img;
@@ -148,9 +148,9 @@ Image crop_image(Image img, int x, int y, int w, int h) {
 
     for(int i = 0; i < h; ++i) {
         for(int j = 0; j < w; ++j) {
-            croped.pixel[i][j][0] = img.pixel[i + y][j + x][0];
-            croped.pixel[i][j][1] = img.pixel[i + y][j + x][1];
-            croped.pixel[i][j][2] = img.pixel[i + y][j + x][2];
+            croped.pixel[i][j].r = img.pixel[i + y][j + x].r;
+            croped.pixel[i][j].g = img.pixel[i + y][j + x].g;
+            croped.pixel[i][j].b = img.pixel[i + y][j + x].b;
         }
     }
 

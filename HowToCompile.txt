@@ -1,0 +1,8 @@
+On terminal use command $: make
+To remove generated files use command $: make clean
+
+or simply use the command to compile both files *.c.
+$: gcc main.c filters.c -o Photopobre
+
+if terminal shows any error finding the header files, use command.
+$: gcc -I ../01--ViBorges/ main.c filters.c -o Photopobre
